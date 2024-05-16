@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 
 
+
+
 const userCtr = {
     register : async(req, res) => {
 
@@ -30,10 +32,10 @@ const userCtr = {
             // create jwt  to authenticate  
             const accesstoken = createAccessToken({id : newUser._id})
             const refreshtoken = createRefreshToken({id : newUser._id})
-            res.cookie('refreshtoken ' , refreshtoken , {
+            res.cookie('refreshtoken' , refreshtoken , {
                 httpOnly : true ,
                 path : '/user/refresh_token'
-                
+           
             })
 
             res.json({accesstoken})
@@ -44,11 +46,27 @@ const userCtr = {
         return res.status(500).json({msg : err.message})
        }
     } , 
-    refreshtoken  : async ( req , res )=>{
-      const rf_token = req.cookies.refreshtoken;
+     
 
+    refreshtoken  : async ( req , res )=>{
+
+      try {
+        const rf_token = req.cookies.refreshtoken;
+
+        if(!rf_token)return res.status(400).json({msg :" login or reguster"});
+  
+        jwt.verify(rf_token, process.env.REFRESH_SECRET,(err , user)=>{
+          if(err)return res.status(400).json({msg : "login or register"});
+          const accesstoken = createAccessToken({id : user.id})
+        res.json({user , accesstoken})
+        })
+      }
+      catch(err) {
+        return res.status(500).json({msg : err.message});
+      }
+     
     }
-}
+  }
 const createAccessToken=(payload)=>{
   return jwt.sign(payload, process.env.JWT_SECRET , {expiresIn : "1d"});
 

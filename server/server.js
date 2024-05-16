@@ -3,9 +3,12 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 const mongoose = require('mongoose');
 require('dotenv').config();
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
 
 const PORT = process.env.PORT || 3000;
 
