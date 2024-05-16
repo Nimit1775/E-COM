@@ -2,11 +2,6 @@ const Users = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const { createReadStream } = require('fs');
 const jwt = require('jsonwebtoken');
-
-
-
-
-
 const userCtr = {
     register : async(req, res) => {
 
